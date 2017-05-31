@@ -49,6 +49,7 @@ import java.util.UUID;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.saiku.service.license.UnlimitedLicense;
 
 
 public class SessionService implements ISessionService {
@@ -116,7 +117,7 @@ public class SessionService implements ISessionService {
 			}
 
 			try {
-				if (l.getLicense() instanceof SaikuLicense2) {
+				if (l.getLicense() instanceof SaikuLicense2 || sl instanceof UnlimitedLicense) {
 
                     if (authenticationManager != null) {
                         authenticate(req, username, password);

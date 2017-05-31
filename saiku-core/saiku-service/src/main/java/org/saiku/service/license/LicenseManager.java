@@ -14,7 +14,7 @@ import bi.meteorite.license.EncryptionManager;
 import bi.meteorite.license.ILicense;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.BufferedOutputStream;    
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
