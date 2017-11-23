@@ -15,6 +15,8 @@
  */
 package org.saiku.olap.discover;
 
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 import org.saiku.datasources.connection.IConnectionManager;
 import org.saiku.olap.dto.*;
 import org.saiku.olap.util.ObjectUtil;
@@ -41,14 +43,24 @@ import java.util.List;
 
 import mondrian.olap4j.SaikuMondrianHelper;
 import mondrian.rolap.RolapConnection;
+import org.saiku.service.util.VietnameseUnicodeUtils;
 
 public class OlapMetaExplorer {
 
 	private static final Logger log = LoggerFactory.getLogger(OlapMetaExplorer.class);
 
 	private final IConnectionManager connections;
+        
+	CsvParserSettings settings;
+	CsvParser parser;
 
 	public OlapMetaExplorer(IConnectionManager ic) {
+            
+		settings = new CsvParserSettings();
+		settings.getFormat().setQuote('"');
+		settings.getFormat().setDelimiter(',');
+		parser = new CsvParser(settings);
+            
 		connections = ic;
 	}
 
@@ -332,11 +344,28 @@ public class OlapMetaExplorer {
 				  else{
 					lokuplist = l.getMembers();
 				  }
-					for (Member m : lokuplist) {
+
+					// Non-vietnamese lookup list
+					List<String> lookupNameList = new ArrayList<>(lokuplist.size());
+					List<String> lookupCaptionList = new ArrayList<>(lokuplist.size());
+
+					for (int i = 0, size = lokuplist.size(); i < size; i++) {
+						Member m = lokuplist.get(i);
+						lookupNameList.add(VietnameseUnicodeUtils.convertAndLowerCase(m.getName()));
+						lookupCaptionList.add(VietnameseUnicodeUtils.convertAndLowerCase(m.getCaption()));
+					}
+
+					String normalizedSearchString = VietnameseUnicodeUtils.convertAndLowerCase(searchString);
+
+					for (int i = 0, size = lokuplist.size(); i < size; i++) {
+						Member m = lokuplist.get(i);
+						String lookupName = lookupNameList.get(i);
+						String lookupCaption = lookupCaptionList.get(i);
+
 						if (search) {
-							if (m.getName().toLowerCase().contains(searchString) || m.getCaption().toLowerCase().contains(searchString) ) {
-									foundMembers.add(m);
-									found++;
+							if (lookupName.contains(normalizedSearchString) || lookupCaption.contains(normalizedSearchString)) {
+								foundMembers.add(m);
+								found++;
 							}
 						} else {
 							foundMembers.add(m);
@@ -346,11 +375,36 @@ public class OlapMetaExplorer {
 							break;
 						}
 					}
+
+					// If searchString not found, try to parse with delimiter if can
+					if (search && foundMembers.isEmpty()) {
+						String[] tokens = parser.parseLine(normalizedSearchString);
+
+						if (tokens.length > 1) {
+							for (int i = 0, size = lokuplist.size(); i < size; i++) {
+								Member m = lokuplist.get(i);
+								String lookupName = lookupNameList.get(i);
+								String lookupCaption = lookupCaptionList.get(i);
+
+								for (String token : tokens) {
+									if (lookupName.contains(token) || lookupCaption.contains(token)) {
+										foundMembers.add(m);
+										found++;
+										break;
+									}
+								}
+								if (searchLimit > 0 && found >= searchLimit) {
+									break;
+								}
+							}
+						}
+					}
+
 					simpleMembers = ObjectUtil.convert2Simple(foundMembers);
 				} else {
 				  List<Member> lookuplist = null;
-				  if(SaikuMondrianHelper.isMondrianConnection(con) &&
-					 SaikuMondrianHelper.getMondrianServer(con).getVersion().getMajorVersion()>=4) {
+				  if(SaikuMondrianHelper.isMondrianConnection(con) && 
+					 SaikuMondrianHelper.getMondrianServer(con).getVersion().getMajorVersion() >= 4) {
 					 lookuplist = SaikuMondrianHelper.getMDXMemberLookup(con, cube.getName(), l);
 				  }
 				  else{

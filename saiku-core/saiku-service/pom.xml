@@ -153,6 +153,14 @@
         </plugins>
     </build>
     <dependencies>
+        
+        <dependency>
+            <groupId>com.univocity</groupId>
+            <artifactId>univocity-parsers</artifactId>
+            <version>2.5.9</version>
+            <type>jar</type>
+        </dependency>
+        
         <dependency>
             <groupId>bi.meteorite</groupId>
             <artifactId>licenseserver-core</artifactId>
