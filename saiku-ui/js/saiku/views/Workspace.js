@@ -32,7 +32,7 @@ var Workspace = Backbone.View.extend({
 
     initialize: function(args) {
         // Maintain `this` in jQuery event handlers
-        _.bindAll(this, "caption", "adjust", "toggle_sidebar", "prepare", "new_query", "set_class_charteditor",
+        _.bindAll(this, "caption", "adjust", "adjust_trigger", "toggle_sidebar", "prepare", "new_query", "set_class_charteditor",
                 "init_query", "update_caption", "populate_selections","refresh", "sync_query", "cancel", "cancelled", "no_results", "error", "switch_view_state");
 
         // Attach an event bus to the workspace
@@ -241,6 +241,7 @@ var Workspace = Backbone.View.extend({
         this.chart.render_view();
         // Adjust tab when selected
         this.tab.bind('tab:select', this.adjust);
+        this.tab.bind('tab:select', this.adjust_trigger);
         $(window).resize(this.adjust);
 
 
@@ -331,6 +332,12 @@ var Workspace = Backbone.View.extend({
         this.trigger('workspace:adjust', { workspace: this });
     },
 
+    adjust_trigger: function() {
+        _.defer(function() {
+            $(window).trigger('resize');
+        });
+    },
+
     toggle_sidebar: function() {
         // Toggle sidebar
         $(this.el).find('.sidebar').toggleClass('hide');
@@ -341,6 +348,7 @@ var Workspace = Backbone.View.extend({
                 1;
         var new_margin = calculatedMargin;
         $(this.el).find('.workspace_inner').css({ 'margin-left': new_margin });
+        this.adjust_trigger();
     },
 
     prepare: function() {
@@ -533,20 +541,29 @@ var Workspace = Backbone.View.extend({
     new_query: function() {
         // Delete the existing query
         if (this.query) {
-            if(Settings.QUERY_OVERWRITE_WARNING) {
+            if (Settings.QUERY_OVERWRITE_WARNING) {
                 (new WarningModal({
-                    title: "New Query", message: "You are about to clear your existing query",
-                    okay: this.create_new_query, okayobj: this
+                    title: 'New Query',
+                    message: 'You are about to clear your existing query',
+                    okay: this.create_new_query,
+                    okayobj: this,
+                    cancel: this.cancel_new_query,
+                    cancelobj: this
                 })).render().open();
             }
-            else{
+            else {
                 this.create_new_query(this);
             }
         }
-        else{
+        else {
             this.create_new_query(this);
         }
+    },
 
+    cancel_new_query: function(args) {
+        var selectedCube = args.selected_cube;
+
+        args.$el.find('#cubesselect option[value="' + selectedCube + '"]').prop('selected', true);
     },
 
     init_query: function(isNew) {
@@ -1076,21 +1093,24 @@ var Workspace = Backbone.View.extend({
 
         $(this.el).find(".workspace_results_info").html(info);
 
-        var h = args.workspace.query.getProperty("saiku.ui.headings");
-        if(h!=undefined) {
-            var headings = JSON.parse(h);
-            var header = '';
-            if(headings.title!=null && headings.title != "") {
-                header = '<h3><span class="i18n">Title:</span></h3> &nbsp;' + headings.title + '<br/>';
+        if (Settings.REPORT_TITLES) {
+            var h = args.workspace.query.getProperty("saiku.ui.headings");
+            if(h!=undefined) {
+                var headings = JSON.parse(h);
+                var header = '';
+                if(headings.title!=null && headings.title != "") {
+                    header = '<h3><span class="i18n">Title:</span></h3> &nbsp;' + headings.title + '<br/>';
+                }
+                if(headings.variable != null && headings.variable != "") {
+                    header += '<h3><span class="i18n">Variable:</span></h3> &nbsp;' + headings.variable + '<br/>';
+                }
+                if(headings.explanation!=null && headings.explanation != "") {
+                    header += '<h3><span class="i18n">Explanation:</span></h3> &nbsp;' + headings.explanation;
+                }
+                $(this.el).find(".workspace_results_titles").html(header);
             }
-            if(headings.variable != null && headings.variable != "") {
-                header += '<h3><span class="i18n">Variable:</span></h3> &nbsp;' + headings.variable + '<br/>';
-            }
-            if(headings.explanation!=null && headings.explanation != "") {
-                header += '<h3><span class="i18n">Explanation:</span></h3> &nbsp;' + headings.explanation;
-            }
-            $(this.el).find(".workspace_results_titles").html(header);
         }
+
         this.adjust();
         Saiku.i18n.translate();
         return;
