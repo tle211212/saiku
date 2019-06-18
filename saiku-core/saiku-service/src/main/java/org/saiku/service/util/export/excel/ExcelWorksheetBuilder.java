@@ -815,16 +815,24 @@ public class ExcelWorksheetBuilder {
         }
 
         if (topLeftCornerHeight > 0 && topLeftCornerWidth > 0) {
-            workbookSheet.addMergedRegion(
-                    new CellRangeAddress(startRow, startRow + topLeftCornerHeight - 1, 0, topLeftCornerWidth - 1));
+			try {
+				workbookSheet.addMergedRegion(
+						new CellRangeAddress(startRow, startRow + topLeftCornerHeight - 1, 0, topLeftCornerWidth - 1));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
         }
 
         if (mergedItemsConfig.size() > 0) {
             for (ExcelMergedRegionItemConfig item : mergedItemsConfig) {
                 int lastCol = item.getStartX() + item.getWidth() - 1;
                 lastCol = lastCol >= maxColumns ? maxColumns - 1 : lastCol;
-                workbookSheet.addMergedRegion(new CellRangeAddress(item.getStartY(),
-                        item.getStartY() + item.getHeight(), item.getStartX(), lastCol));
+				try {
+					workbookSheet.addMergedRegion(new CellRangeAddress(item.getStartY(),
+							item.getStartY() + item.getHeight(), item.getStartX(), lastCol));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
             }
         }
 
@@ -932,7 +940,9 @@ public class ExcelWorksheetBuilder {
 
                         if (current) {
                             if (next == null || !next) {
-                                workbookSheet.addMergedRegion(new CellRangeAddress(row - mergeCount, row, col, col));
+								if (mergeCount > 0) {
+									workbookSheet.addMergedRegion(new CellRangeAddress(row - mergeCount, row, col, col));
+								}
                             }
                             mergeCount++;
                         } else {
