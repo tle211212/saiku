@@ -331,7 +331,23 @@ public class RepositoryDatasourceManager implements IDatasourceManager, Applicat
 
     }
 
-    public Map<String, SaikuDatasource> getDatasources(String[] roles) {
+    public Map<String, SaikuDatasource> getDatasources() {
+/*        if (workspaces) {
+            Map<String, SaikuDatasource> newdslist = new HashMap<>();
+            for (Map.Entry<String, SaikuDatasource> entry : datasources.entrySet()) {
+
+                String s = getworkspacedir();
+                if (s.endsWith("/")) {
+                    s = s.substring(0, s.length() - 1);
+                }
+                if (entry.getKey().startsWith(s)) {
+                    newdslist.put(entry.getKey(), entry.getValue());
+                }
+            }
+            return newdslist;
+        } else {
+            return datasources;
+        }*/
       return datasources;
     }
 

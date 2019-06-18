@@ -65,11 +65,6 @@ public class PentahoRepositoryResource implements IDatasourceManager {
     return false;
   }
 
-  @Override
-  public Map<String, SaikuDatasource> getDatasources(String[] roles) {
-    return null;
-  }
-
   public Map<String, SaikuDatasource> getDatasources() {
     return null;
   }

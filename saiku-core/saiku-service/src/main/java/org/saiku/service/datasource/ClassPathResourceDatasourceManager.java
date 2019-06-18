@@ -294,7 +294,7 @@ public class ClassPathResourceDatasourceManager implements IDatasourceManager {
 
   }
 
-  public Map<String, SaikuDatasource> getDatasources(String[] roles) {
+  public Map<String, SaikuDatasource> getDatasources() {
     return datasources;
   }
 

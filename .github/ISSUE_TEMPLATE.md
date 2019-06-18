@@ -1,7 +1,5 @@
 <!--
   PLEASE READ THE FIRST SECTION :-)
-
-  NOTE: English is the universal language nowadays, so please don't create or comment on issues using another language.
 -->
 
 ### Is this a bug report?

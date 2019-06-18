@@ -106,11 +106,9 @@ public class AdminResource {
         if(!userService.isAdmin()){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-        
         List<DataSourceMapper> l = new ArrayList<>();
-        
         try {
-            for (SaikuDatasource d : datasourceService.getDatasources(userService.getCurrentUserRoles()).values()) {
+            for (SaikuDatasource d : datasourceService.getDatasources().values()) {
                 l.add(new DataSourceMapper(d));
             }
             return Response.ok().entity(l).build();
@@ -138,9 +136,10 @@ public class AdminResource {
         }
 
         try {
-            datasourceService.addDatasource(json.toSaikuDataSource(), true, userService.getCurrentUserRoles());
+            datasourceService.addDatasource( json.toSaikuDataSource(), true );
             return Response.ok().type("application/json").entity(json).build();
-        } catch (Exception e){
+        }
+        catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage())
                            .type("text/plain").build();
         }
@@ -189,7 +188,7 @@ public class AdminResource {
         }
 
         try {
-            datasourceService.addDatasource(json.toSaikuDataSource(), false, userService.getCurrentUserRoles());
+            datasourceService.addDatasource(json.toSaikuDataSource(), false);
             return Response.ok().entity(json).type("application/json").build();
         } catch (Exception e) {
             log.error("Error adding data source", e);
@@ -208,14 +207,12 @@ public class AdminResource {
     @DELETE
     @Path("/datasources/{id}")
     public Response deleteDatasource(@PathParam("id") String id) {
+
         if(!userService.isAdmin()){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-        
         datasourceService.removeDatasource(id);
-        
-        return Response.ok().type("application/json")
-            .entity(datasourceService.getDatasources(userService.getCurrentUserRoles())).build();
+        return Response.ok().type("application/json").entity(datasourceService.getDatasources()).build();
     }
 
     /**
@@ -318,7 +315,7 @@ public class AdminResource {
             boolean overwrite = true;
             SaikuDatasource saikuDatasource = datasourceService.getDatasource(datasourceName);
             datasourceService.setLocaleOfDataSource(saikuDatasource, locale);
-            datasourceService.addDatasource(saikuDatasource, overwrite, userService.getCurrentUserRoles());
+            datasourceService.addDatasource(saikuDatasource, overwrite);
             return Response.ok().type("application/json").entity(new DataSourceMapper(saikuDatasource)).build();
         } catch(SaikuDataSourceException e){
             return Response.ok().type("application/json").entity(e.getLocalizedMessage()).build();
@@ -564,10 +561,14 @@ public class AdminResource {
     @ReturnType("java.lang.String")
     public Response getVersion(){
         Properties prop = new Properties();
+        InputStream input = null;
         String version = "";
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream is = classloader.getResourceAsStream("org/saiku/web/rest/resources/version.properties");
         try {
+
+            //input = new FileInputStream("version.properties");
+
             // load a properties file
             prop.load(is);
 

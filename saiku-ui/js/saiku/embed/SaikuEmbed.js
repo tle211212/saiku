@@ -363,10 +363,6 @@ var SaikuClient = (function() {
 							}
 						}
 					}
-					else {
-						renderMode = options.render;
-						mode = options.mode;
-					}
 
 					options['render'] = renderMode;
 					options['mode'] = mode;

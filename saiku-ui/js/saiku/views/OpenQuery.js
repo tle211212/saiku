@@ -54,6 +54,7 @@ var OpenQuery = Backbone.View.extend({
         return '<span class="i18n">Repository</span>';
     },
 
+    /*jshint -W069 */
     render: function() {
         // Load template
         $(this.el).html(this.template());
