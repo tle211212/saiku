@@ -2,6 +2,7 @@
   "name": "saiku-ui",
   "description": "A user interface for the Saiku analytical tool",
   "homepage": "http://www.meteorite.bi/saiku",
+  "version": "3.14.0",
   "author": {
     "name": "Meteorite BI",
     "email": "info@meteorite.bi",
@@ -35,7 +36,7 @@
     "business-intelligence"
   ],
   "bugs": {
-    "url": "https://github.com/OSBI/saiku/issues"
+    "url": "http://jira.meteorite.bi"
   },
   "main": "server.js",
   "scripts": {
@@ -51,7 +52,6 @@
   },
   "devDependencies": {
     "browser-sync": "^2.18.12",
-    "eslint": "^4.18.1",
     "gulp": "^3.9.1",
     "proxy-middleware": "^0.15.0",
     "url": "^0.11.0"

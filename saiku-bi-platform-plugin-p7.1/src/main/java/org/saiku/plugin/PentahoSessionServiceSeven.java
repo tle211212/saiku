@@ -58,7 +58,7 @@ public class PentahoSessionServiceSeven implements ISessionService {
 		this.l = l;
 	}
 
-	private static final Logger log = LoggerFactory.getLogger(PentahoSessionServiceSeven.class);
+	private static final Logger log = LoggerFactory.getLogger(PentahoSessionService.class);
 
 	private AuthenticationManager authenticationManager;
 
@@ -124,7 +124,7 @@ public class PentahoSessionServiceSeven implements ISessionService {
 	public Map<String, Object> login(HttpServletRequest req, String username, String password ) {
 	  pah.startAudit("Saiku", "Login", this.getClass().getName(), this.toString(), this.toString(), null, new
 		  SimpleLogger(
-		  PentahoSessionServiceSeven.class
+		  PentahoSessionService.class
 			  .getName()));
 		if (authenticationManager != null) {
 			authenticate(req, username, password);
@@ -297,7 +297,7 @@ public class PentahoSessionServiceSeven implements ISessionService {
 
   private SimpleLogger getLogger(){
 	return new SimpleLogger(
-		PentahoSessionServiceSeven.class
+		PentahoSessionService.class
 			.getName());
   }
 

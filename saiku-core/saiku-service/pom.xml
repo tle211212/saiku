@@ -2,17 +2,17 @@
     <parent>
         <artifactId>saiku-core</artifactId>
         <groupId>org.saikuanalytics</groupId>
-        <version>3.17</version>
+        <version>3.15</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>saiku-service</artifactId>
-    <version>3.17</version>
+    <version>3.15</version>
     <name>saiku - services</name>
     <build>
         <plugins>
            <!-- <plugin>
-                                <groupId>org.apache.felix</groupId>
+                <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.4.0</version>
                 <extensions>true</extensions>
@@ -136,19 +136,31 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--<plugin> <groupId>net.thucydides.maven.plugins</groupId> <artifactId>maven-thucydides-plugin</artifactId> 
-                                <version>0.9.229</version> <executions> <execution> <id>thucydides-reports</id> 
-                <phase>post-integration-test</phase> <goals> <goal>aggregate</goal> </goals> 
-                </execution> </executions> </plugin> -->
+            <!--<plugin>
+                <groupId>net.thucydides.maven.plugins</groupId>
+                <artifactId>maven-thucydides-plugin</artifactId>
+                <version>0.9.229</version>
+                <executions>
+                    <execution>
+                        <id>thucydides-reports</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
     </build>
     <dependencies>
+        
         <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
             <version>2.5.9</version>
             <type>jar</type>
         </dependency>
+        
         <dependency>
             <groupId>bi.meteorite</groupId>
             <artifactId>licenseserver-core</artifactId>
@@ -180,6 +192,7 @@
         <dependency>
             <groupId>org.olap4j</groupId>
             <artifactId>olap4j-xmlaserver</artifactId>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.olap4j</groupId>
@@ -287,8 +300,10 @@
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
         </dependency>
-        <!--<dependency> <groupId>net.thucydides</groupId> <artifactId>thucydides-core</artifactId> 
-                        </dependency> -->
+        <!--<dependency>
+            <groupId>net.thucydides</groupId>
+            <artifactId>thucydides-core</artifactId>
+        </dependency>-->
         <dependency>
             <groupId>net.serenity-bdd</groupId>
             <artifactId>serenity-core</artifactId>
@@ -320,17 +335,15 @@
             <artifactId>spring-beans</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency> <groupId>net.thucydides</groupId> <artifactId>thucydides-jbehave-plugin</artifactId> 
-                        <scope>test</scope> </dependency> -->
+        <!--<dependency>
+            <groupId>net.thucydides</groupId>
+            <artifactId>thucydides-jbehave-plugin</artifactId>
+            <scope>test</scope>
+        </dependency>-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -400,4 +413,3 @@
         </repository>
     </repositories>
 </project>
-

@@ -2,16 +2,17 @@
     <parent>
         <artifactId>saiku</artifactId>
         <groupId>org.saikuanalytics</groupId>
-        <version>3.17</version>
+        <version>3.15</version> 
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>saiku-bi-platform-plugin-p7.1</artifactId>
     <packaging>jar</packaging>
+    <version>3.15</version> 
     <name>saiku biserver plugin</name>
 
     <build>
         <resources>
-            <!--<resource>
+            <resource>
                 <directory>src/main/plugin</directory>
                 <targetPath>${basedir}/../saiku-bi-platform-plugin-p5/target/dist/saiku</targetPath>
                 <filtering>true</filtering>
@@ -20,7 +21,7 @@
                     <include>**/*.js</include>
 
                 </includes>
-            </resource>-->
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -65,12 +66,12 @@
                                     <type>jar</type>
                                     <outputDirectory>target/dist/saiku/lib</outputDirectory>
                                 </artifactItem>
-                                <!--<artifactItem>
+                                <artifactItem>
                                     <groupId>org.saikuanalytics</groupId>
                                     <artifactId>saiku-bi-platform-plugin-p5</artifactId>
                                     <type>jar</type>
                                     <outputDirectory>target/dist/saiku/lib</outputDirectory>
-                                </artifactItem>-->
+                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.saikuanalytics</groupId>
                                     <artifactId>saiku-web</artifactId>
@@ -245,7 +246,7 @@
                                 </unzip>
                                 <copy file="${basedir}/target/${project.artifactId}-${project.version}.jar" todir="target/dist/saiku/lib" />
                                 <copy todir="target/dist/saiku/" overwrite="true">
-                                    <fileset dir="${basedir}/src/main/plugin/">
+                                    <fileset dir="${basedir}/../saiku-bi-platform-plugin-p5/src/main/plugin/">
                                         <include name="**/*.xml" />
                                         <exclude name="**/version.xml" />
                                     </fileset>
@@ -257,7 +258,7 @@
                                 </copy>
                                 <mkdir dir="target/dist/saiku/saiku-repository" />
                                 <copy todir="target/dist/saiku/ui/" overwrite="true">
-                                    <fileset dir="${basedir}/src/main/plugin/">
+                                    <fileset dir="${basedir}/../saiku-bi-platform-plugin-p5/src/main/plugin/">
                                         <include name="*.properties" />
                                     </fileset>
                                 </copy>
@@ -266,7 +267,6 @@
                                 </replaceregexp>
                                 <replaceregexp match="(REPOSITORY_LAZY: false,)" replace="REPOSITORY_LAZY: true," flags="gs" byline="false">
                                     <fileset dir="target/dist/saiku/ui/js/saiku/" includes="Settings.js" />
-                                    <fileset dir="target/dist/saiku/ui/js/saiku/" includes="Settings.yaml" />
                                 </replaceregexp>
                                 <zip destfile="target/saiku-plugin-p7.1-${project.version}.zip">
                                     <zipfileset dir="target/dist/" />
@@ -331,7 +331,15 @@
         </repository>
         <repository>
             <id>pentaho-third-party</id>
-            <url>http://nexus.pentaho.org/content/groups/omni</url>
+            <url>http://nexus.pentaho.org/content/repositories/proxied-3rd-party-releases/</url>
+        </repository>
+        <repository>
+            <id>pentaho-public-release</id>
+            <url>http://nexus.pentaho.org/content/repositories/pentaho-public-release-repos/</url>
+        </repository>
+        <repository>
+            <id>pentaho-snapshot</id>
+            <url>http://nexus.pentaho.org/content/repositories/public-snapshots/</url>
         </repository>
 
         <repository>
@@ -352,7 +360,7 @@
         </repository>
     </repositories>
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>org.saikuanalytics</groupId>
             <artifactId>saiku-bi-platform-plugin-p5</artifactId>
             <version>${pom.version}</version>
@@ -374,7 +382,7 @@
                     <artifactId>eigenbase-xom</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.saikuanalytics</groupId>
             <artifactId>saiku-service</artifactId>
@@ -430,11 +438,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>pentaho</groupId>
-            <artifactId>pentaho-platform-repository</artifactId>
-            <version>7.1.0.0-12</version>
         </dependency>
         <!--
                 <dependency>
