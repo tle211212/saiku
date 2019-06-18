@@ -66,7 +66,8 @@ var Chart = Backbone.View.extend({
         if (svgContent.substr(0,rep.length) != rep) {
             svgContent = svgContent.replace('<svg ', rep);
         }
-        svgContent = '<!DOCTYPE svg [<!ENTITY nbsp "&#160;">]>' + svgContent;
+        this.download_chart(svgContent, $('svg').width(), $('svg').height(), type);
+        /*svgContent = '<!DOCTYPE svg [<!ENTITY nbsp "&#160;">]>' + svgContent;
 
         var form = $('#svgChartPseudoForm');
         form.find('.type').val(type);
@@ -76,8 +77,33 @@ var Chart = Backbone.View.extend({
             form.find('.name').val(f);
         }
         form.attr('action', Settings.REST_URL + this.workspace.query.url() + escape("/../../export/saiku/chart"));
-        form.submit();
+        form.submit();*/
         return false;
+    },
+    
+    download_chart: function (data, x, y, type) {
+        /** custom **/
+        var width = x;
+        var height = y;
+        var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
+        var url = URL.createObjectURL(svg);
+        var img = $('<img />')
+                .width(width)
+                .height(height)
+                //.style("background-color:white;")
+                .on('load', function () {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img.get(0), 0, 0);
+                    canvas.toBlob(function (blob) {
+                        saveAs(blob, "fhs_chart_" + new Date().valueOf() + "." + type);
+                    });
+                });
+        img.attr('src', url);
     },
 
     show_editor:function(event) {
@@ -141,8 +167,8 @@ var Chart = Backbone.View.extend({
                 },
                 items: {
                     "png": {name: "PNG"},
-                    // "jpg": {name: "JPEG"},
-                    "pdf": {name: "PDF"}
+                    "jpg": {name: "JPEG"}
+                    //"pdf": {name: "PDF"}
                 }
         });
         $target.contextMenu();
