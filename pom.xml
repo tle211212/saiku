@@ -133,11 +133,6 @@
     </repositories>
     <build>
         <plugins>
-<<<<<<< HEAD
-
-
-=======
->>>>>>> parent of 6d195b5... Merge upstream 3.17. But compilation is broken. Will merge fixes from upstream development branch later
       <!--      <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-changes-plugin</artifactId>
