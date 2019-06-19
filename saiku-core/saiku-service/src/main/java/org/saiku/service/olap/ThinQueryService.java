@@ -440,14 +440,14 @@ public class ThinQueryService implements Serializable {
             CellDataSet table = OlapResultSetUtil.cellSet2Matrix(rs, formatter);
 
             //Calculate totals and sub totals
-            if (ThinQuery.Type.QUERYMODEL.equals(tq.getType()) && formatter instanceof FlattenedCellSetFormatter && tq.hasAggregators()) {
-                try {
-                    calculateTotals(tq, table, rs, formatter);
-                } catch (Exception e) {
-                    //Ignore totals calculation errors
-                    log.error(e.getMessage(), e);
-                }
-            }
+//            if (ThinQuery.Type.QUERYMODEL.equals(tq.getType()) && formatter instanceof FlattenedCellSetFormatter && tq.hasAggregators()) {
+//                try {
+//                    calculateTotals(tq, table, rs, formatter);
+//                } catch (Exception e) {
+//                    //Ignore totals calculation errors
+//                    log.error(e.getMessage(), e);
+//                }
+//            }
 
             List<ThinHierarchy> filterHierarchies = null;
 
