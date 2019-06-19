@@ -412,6 +412,8 @@ public class ExcelWorksheetBuilder {
         for (int i = 0; i < 5; i++) {
             summarySheet.autoSizeColumn(i);
         }
+		
+		excelWorkbook.setSheetHidden(excelWorkbook.getSheetIndex(summarySheet), true);
     }
 
     private void addExcelTableRows(int startingRow) {
@@ -693,7 +695,8 @@ public class ExcelWorksheetBuilder {
             numberCSClone.setFillForegroundColor(numberCS.getFillForegroundColor());
             numberCSClone.setFillBackgroundColor(numberCS.getFillBackgroundColor());
         }
-
+		
+		setCellBordersColor(numberCSClone);
         cell.setCellStyle(numberCSClone);
     }
 
