@@ -1252,15 +1252,15 @@ textarea, select {
 }
 
 .dialog_parent-member-selector .form-group .members-list li:hover {
-	background-color: #f0f0f0;
+	background-color: #32c57f;
 }
 
 .dialog_parent-member-selector .form-group .members-list::selection {
-	background-color: #fff;
+	background-color: #32c57f;
 }
 
 .dialog_parent-member-selector .form-group .members-list li::selection {
-	background-color: #fff;
+	background-color: #32c57f;
 }
 
 .dialog_permissions .dialog_body {
@@ -1286,7 +1286,7 @@ textarea, select {
 	line-height: 30px;
 }
 .dialog_filter .dialog_body .n {
-	width: 40px;
+	width: 154px;
 }
 
 .dialog_filter td.col1 {
@@ -2300,7 +2300,7 @@ span.cancel_search:hover {
 }
 
 .highlight_li {
-	background-color: #f0f0f0;
+	background-color: #32c57f;
 }
 
 /* Print styles */
