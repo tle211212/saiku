@@ -784,8 +784,13 @@ public class ExcelWorksheetBuilder {
 
             int column = 0;
             for (y = 0; y < maxColumns && y < rowsetHeader[x].length; y++) {
-
-                currentHeader = rowsetHeader[x][y].getFormattedValue();
+				
+				currentHeader = rowsetHeader[x][y].getFormattedValue();
+				
+				if (currentHeader == null && y == 0 && rowsetHeader[x].length > 2) {
+					currentHeader = rowsetHeader[x][1].getParentDimension();
+				}
+				
                 if (currentHeader != null) {
                     if (rowsetHeader[x].length == y + 1) {
                         isLastColumn = true;
@@ -821,14 +826,14 @@ public class ExcelWorksheetBuilder {
                 manageCellsMerge(y - 1, x, mergedCellsWidth + 1, startSameFromPos, mergedItemsConfig);
         }
 
-        if (topLeftCornerHeight > 0 && topLeftCornerWidth > 0) {
-			try {
-				workbookSheet.addMergedRegion(
-						new CellRangeAddress(startRow, startRow + topLeftCornerHeight - 1, 0, topLeftCornerWidth - 1));
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-        }
+//        if (topLeftCornerHeight > 0 && topLeftCornerWidth > 0) {
+//			try {
+//				workbookSheet.addMergedRegion(
+//						new CellRangeAddress(startRow, startRow + topLeftCornerHeight - 1, 0, topLeftCornerWidth - 1));
+//			} catch (Exception ex) {
+//				ex.printStackTrace();
+//			}
+//        }
 
         if (mergedItemsConfig.size() > 0) {
             for (ExcelMergedRegionItemConfig item : mergedItemsConfig) {
@@ -850,7 +855,7 @@ public class ExcelWorksheetBuilder {
         if (topLeftCornerHeight > 0 && x >= topLeftCornerHeight) {
             fillHeaderCell(sheetRow, currentHeader, y);
         } else if ((topLeftCornerHeight > 0 && x < topLeftCornerHeight)
-                && (topLeftCornerWidth > 0 && y >= topLeftCornerWidth)) {
+                && (topLeftCornerWidth > 0 && y >= 0)) {
             fillHeaderCell(sheetRow, currentHeader, y);
         } else if (topLeftCornerHeight == 0 && topLeftCornerWidth == 0)
             fillHeaderCell(sheetRow, currentHeader, y);
