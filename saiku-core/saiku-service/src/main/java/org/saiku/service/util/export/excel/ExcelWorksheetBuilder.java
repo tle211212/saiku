@@ -74,7 +74,7 @@ public class ExcelWorksheetBuilder {
     private HSSFPalette customColorsPalette;
     private ExcelBuilderOptions options;
 
-    private final Map<String, CellStyle> cellStyles = new HashMap<>();
+    private final Map<String, CellStyle> numberCellStyleMap = new HashMap<>();
 
     private static final Logger log = LoggerFactory.getLogger(ExcelWorksheetBuilder.class);
 
@@ -644,17 +644,14 @@ public class ExcelWorksheetBuilder {
         * different colours, all those cells would have the last cell colour.
         */
         String formatString = dataCell.getFormatString();
-        CellStyle numberCSClone = excelWorkbook.createCellStyle();
-
-        numberCSClone.cloneStyleFrom(numberCS);
+		
+		List<String> keyList = new ArrayList<>();
 
         try {
             formatString = FormatUtil.getFormatString(formatString);
-            DataFormat fmt = excelWorkbook.createDataFormat();
-            short dataFormat = fmt.getFormat(formatString);
-            numberCSClone.setDataFormat(dataFormat);
+			keyList.add(formatString);
         } catch (Exception ex) {
-
+			keyList.add("undefined");
         }
 
         // Check for cell background
@@ -666,8 +663,9 @@ public class ExcelWorksheetBuilder {
             short colorCodeIndex = getColorFromCustomPalette(colorCode);
 
             if (colorCodeIndex != -1) {
-                numberCSClone.setFillForegroundColor(colorCodeIndex);
-                numberCSClone.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				keyList.add(String.valueOf(colorCodeIndex));
+				keyList.add("undefined");
+				
             } else if (customColorsPalette == null) {
                 try {
 
@@ -678,26 +676,88 @@ public class ExcelWorksheetBuilder {
                     int redCode   = Integer.parseInt(colorCode.substring(1, 3), 16);
                     int greenCode = Integer.parseInt(colorCode.substring(3, 5), 16);
                     int blueCode  = Integer.parseInt(colorCode.substring(5, 7), 16);
-
-                    numberCSClone.setFillPattern(CellStyle.SOLID_FOREGROUND);
-
-                    ((XSSFCellStyle) numberCSClone).setFillForegroundColor(
-                            new XSSFColor(new java.awt.Color(redCode, greenCode, blueCode)));
-                    ((XSSFCellStyle) numberCSClone).setFillBackgroundColor(
-                            new XSSFColor(new java.awt.Color(redCode, greenCode, blueCode)));
+					
+					String rgbCode = redCode + ";" + greenCode + ";" + blueCode;
+					
+					keyList.add(rgbCode);
+					keyList.add(rgbCode);
+					
                 } catch (Exception e) {
                     // we tried to set the color, no luck, lets continue
                     // without
+					keyList.add("undefined");
+					keyList.add("undefined");
                 }
 
             }
         } else {
-            numberCSClone.setFillForegroundColor(numberCS.getFillForegroundColor());
-            numberCSClone.setFillBackgroundColor(numberCS.getFillBackgroundColor());
+			keyList.add(String.valueOf(numberCS.getFillForegroundColor()));
+			keyList.add(String.valueOf(numberCS.getFillBackgroundColor()));            
         }
 		
-		setCellBordersColor(numberCSClone);
-        cell.setCellStyle(numberCSClone);
+		String key = String.join("---", keyList);
+		
+		CellStyle numberCSStyle = numberCellStyleMap.get(key);
+		if (numberCSStyle == null) {
+			
+			String[] keySplits = key.split("---");
+			
+			String keyFormatString = keySplits[0];
+			String keyFillForeCoundColor = keySplits[1];
+			String keyFillBackgroundColor = keySplits[2];
+			
+			numberCSStyle = excelWorkbook.createCellStyle();
+			numberCSStyle.cloneStyleFrom(numberCS);
+			
+			if (!keyFormatString.equals("undefined")) {
+				DataFormat fmt = excelWorkbook.createDataFormat();
+				short keyDataFormat = fmt.getFormat(keyFormatString);
+				numberCSStyle.setDataFormat(keyDataFormat);
+			}
+			
+			if (!keyFillForeCoundColor.equals("undefined") && keyFillBackgroundColor.equals("undefined")) {
+				numberCSStyle.setFillForegroundColor(Short.valueOf(keyFillForeCoundColor));
+				numberCSStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			
+			if (!keyFillForeCoundColor.equals("undefined") && !keyFillBackgroundColor.equals("undefined")) {
+				
+				if (keyFillForeCoundColor.contains(";")) {
+					
+					try {
+						String[] colorSplits = keyFillForeCoundColor.split(";");
+						
+						numberCSStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+						((XSSFCellStyle) numberCSStyle).setFillForegroundColor(
+								new XSSFColor(new java.awt.Color(Integer.valueOf(colorSplits[0]), Integer.valueOf(colorSplits[1]), Integer.valueOf(colorSplits[2]))));
+					} catch (Exception ex) {}
+					
+				} else {
+					numberCSStyle.setFillForegroundColor(numberCS.getFillForegroundColor());
+					numberCSStyle.setFillBackgroundColor(numberCS.getFillBackgroundColor());
+				}
+				
+				if (keyFillBackgroundColor.contains(";")) {
+					try {
+						String[] colorSplits = keyFillBackgroundColor.split(";");
+						
+						numberCSStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+						((XSSFCellStyle) numberCSStyle).setFillBackgroundColor(
+								new XSSFColor(new java.awt.Color(Integer.valueOf(colorSplits[0]), Integer.valueOf(colorSplits[1]), Integer.valueOf(colorSplits[2]))));
+					} catch (Exception ex) {}
+				} else {
+					numberCSStyle.setFillForegroundColor(numberCS.getFillForegroundColor());
+					numberCSStyle.setFillBackgroundColor(numberCS.getFillBackgroundColor());
+				}
+			}
+			
+			numberCellStyleMap.put(key, numberCSStyle);
+		}
+		
+		setCellBordersColor(numberCSStyle);
+        cell.setCellStyle(numberCSStyle);
     }
 
     private short getColorFromCustomPalette(String style) {
