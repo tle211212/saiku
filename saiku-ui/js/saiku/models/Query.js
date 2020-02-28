@@ -137,7 +137,9 @@ var Query = Backbone.Model.extend({
             if (exModel.type == "QUERYMODEL") {
                 var columnsOk = Object.keys(exModel.queryModel.axes.COLUMNS.hierarchies).length > 0;
                 var rowsOk = Object.keys(exModel.queryModel.axes.ROWS.hierarchies).length > 0;
-                var detailsOk = exModel.queryModel.details.axis == 'COLUMNS' && exModel.queryModel.details.measures.length > 0;
+                var measuresOk = exModel.queryModel.details.measures.length > 0;
+                var detailsOk = exModel.queryModel.details.axis == 'COLUMNS' && measuresOk;
+                
                 if (!rowsOk || !columnsOk || !detailsOk) {
                     errorMessage = "";
                 }
@@ -146,9 +148,13 @@ var Query = Backbone.Model.extend({
                 }
                 if(!rowsOk) {
                     errorMessage += '<span class="i18n">You need to include at least one level on rows for a valid query.</span>';
-
                 }
-                if ( (columnsOk || detailsOk) && rowsOk) {
+                
+                if (!measuresOk) {
+					errorMessage += '<span class="i18n">You need to include at least one measure for a valid query.</span>';
+				}
+                
+                if ( measuresOk && (columnsOk || detailsOk) && rowsOk) {
                     validated = true;
                 }
 
