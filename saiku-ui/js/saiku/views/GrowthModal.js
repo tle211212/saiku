@@ -51,7 +51,7 @@ var GrowthModal = Modal.extend({
 		"<td class='col1'><input type='text' class='form-control measure_name' value='Measure Name'></input></td></tr>" +
 
 		'<input type="checkbox" name="asPercent" value="asPercent" id="asPercentCheckbox"> Relative %? <br>' +
-		'<% if(dimensions.length<2){ %>'+
+		'<% if(dimensions.length<1){ %>'+
 		'<input type="checkbox" name="asPercentAlt" disabled value="asPercentAlt" id="asPercentAltCheckbox"> % of Measure<br>' +
 		'<% }  else {%>'+
 		'<input type="checkbox" name="asPercentAlt" value="asPercentAlt" id="asPercentAltCheckbox"> % of Measure<br>' +
@@ -224,6 +224,21 @@ var GrowthModal = Modal.extend({
 					}
 				}
 
+                // dinhnn: handle when only select one member in dimension when calculate % of measure (ty trong)
+				if (hit === true && hierarchies.length === 1) {
+						var generate = this.calculated_generate(s, h);
+						var name = h.name;
+						var dim = h.dimension;
+						var obj = {
+							dimension: dim,
+							hierarchy: name,
+							statement: "sum(" + generate + ")",
+							uniqueName: name + '.[' + dim + '*TOTAL_MEMBER_SEL~SUM]',
+							name: dim + "*TOTAL_MEMBER_SEL~SUM"
+						};
+						this.memberExpression.push(obj);
+				}
+
 			var strdef="";
 			_.each(this.memberExpression, function(m){
 				strdef+=","+ m.uniqueName;
@@ -287,7 +302,7 @@ var GrowthModal = Modal.extend({
 					.text(f.name));
 			});
 
-			$(this.el).find("#Dimensions").find("option:last").prop('disabled', true);
+			$(this.el).find("#Dimensions").find("option:last").prop('disabled', false);
 
 		}
 		// keep DOM up-to-date
@@ -314,16 +329,15 @@ var GrowthModal = Modal.extend({
 		var str;
 
 		var memberstring1 = this.return_selected_members(hierarchies[hierarchies.length-1]);
-		var memberstring2 = this.return_selected_members(hierarchies[hierarchies.length-2]);
 
 
 
-		str="NONEMPTYCROSSJOIN("+memberstring2+","+memberstring1+")";
-		if(hierarchies.length>2){
+		str=memberstring1;
+		if(hierarchies.length>1){
 
 
 
-			for(var i= hierarchies.length-2; i > 0 ;--i){
+			for(var i= hierarchies.length-1; i > 0 ;--i){
 				var memberstring3 = this.return_selected_members(hierarchies[i-1]);
 
 				str="NONEMPTYCROSSJOIN("+memberstring3+","+str+")";
