@@ -241,9 +241,14 @@ var SelectionsModal = Modal.extend({
             dimHier = this.member.hierarchy.split('.');
 
         }
+        
+        // dinhnn: Fix some case hierachy members not show when have calculated members
+        var hName = null;
         if(dimHier.length>1){
-            var hName = dimHier[1].replace(/[\[\]]/gi, '');
-        }
+            hName = dimHier[1].replace(/[\[\]]/gi, '');
+        } else if (dimHier.length === 1) {
+			hName = dimHier[0].replace(/[\[\]]/gi, '');
+		}
         var dName = dimHier[0].replace(/[\[\]]/gi, '');
 
 
@@ -422,6 +427,7 @@ var SelectionsModal = Modal.extend({
         if (this.available_members.length > 0) {
             var availableMembersSelect = $(this.el).find('.available_selections .selection_options');
             availableMembersSelect.empty();
+            
             var selectedHtml = _.template($("#template-selections-options").html())({ options: this.available_members });
             $(availableMembersSelect).html(selectedHtml);
         }
