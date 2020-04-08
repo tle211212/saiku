@@ -243,7 +243,7 @@ var SelectionsModal = Modal.extend({
         }
         
         // dinhnn: Fix some case hierachy members not show when have calculated members
-        var hName = null;
+        var hName = undefined;
         if(dimHier.length>1){
             hName = dimHier[1].replace(/[\[\]]/gi, '');
         } else if (dimHier.length === 1) {
