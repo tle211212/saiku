@@ -55,7 +55,10 @@ public class AxisInfo {
         if ( "Measures".equals( m.getDimension().getName() ) ) {
           axisInfo.measuresMember = mI;
         }
-        usedLevels[ mI ][ m.getLevel().getDepth() ].add( m.getDepth() );
+		
+		if (m.getLevel().getDepth() >= 0) {
+			usedLevels[ mI ][ m.getLevel().getDepth() ].add( m.getDepth() );
+		}
         mI++;
       }
     }

@@ -351,7 +351,11 @@ var SelectionsModal = Modal.extend({
                         }
                     })
                 }
-                this.available_members.push({obj:newCalcMembers[i], calc:calc});
+                
+                if (newCalcMembers[i].name === undefined || !newCalcMembers[i].name.endsWith("*TOTAL_MEMBER_SEL~SUM")) {
+                    this.available_members.push({obj:newCalcMembers[i], calc:calc});
+                }
+
             }
         }
 
