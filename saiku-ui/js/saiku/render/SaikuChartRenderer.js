@@ -124,6 +124,61 @@ SaikuChartRenderer.prototype.render = function () {
     _.delay(this.render_chart_element, 0, this);
 };
 
+SaikuChartRenderer.prototype.getBarChartOptions = function () {
+    let result = {
+        type: "BarChart"
+    };
+
+    // We will render 2 y-axis chart if the data has mixed percents and absolute values.
+    let numericColumns = [];
+    if (this.data && this.data.metadata) {
+        for (let i=0; i < this.data.metadata.length; i++) {
+            let r = this.data.metadata[i];
+            if (r && r.colType && r.colType == "Numeric") {
+                numericColumns.push(i);
+            }
+        }
+    }
+
+    if (numericColumns.length > 1 && this.data.resultset) {
+        // Count percent and absolute numeric columns
+        let percentColumns = [];
+        let nP=0, nA=0;
+        for (let i=0; i < this.data.resultset.length; i++) {
+            let r = this.data.resultset[i];
+            for (let j=0; j < numericColumns.length; j++) {
+                let rr = r[numericColumns[j]];
+                if (rr && rr.f) {
+                    if (rr.f.endsWith("%")) {
+                        nP++;
+                        if (!percentColumns.includes(numericColumns[j])) {
+                            percentColumns.push(numericColumns[j]);
+                        }
+                    }
+                    else {
+                        nA++;
+                    }
+                }
+            }
+        }
+
+        if (nA > 0 && nP > 0) {
+            let percentColumnNames = [];
+            for (let i=0; i < percentColumns.length; i++) {
+                percentColumnNames.push(this.data.metadata[percentColumns[i]].colName);
+            }
+            result.plot2 = true;
+            result.plot2Series = percentColumnNames;
+            result.plot2OrthoAxis = 2;
+            result.plot2NullInterpolationMode = 'linear';
+            result.plot2Line_lineWidth = 2;
+            result.plot2Dot_shapeSize = 7;
+        }
+    }
+
+    return result;
+};
+
 SaikuChartRenderer.prototype.switch_chart = function (key, override) {
     if(override != null || override != undefined){
         if(override.chartDefinition != null || override.chartDefinition != undefined) {
@@ -133,14 +188,14 @@ SaikuChartRenderer.prototype.switch_chart = function (key, override) {
             this.workspace = override.workspace;
         }
     }
+    let barChartOptions = this.getBarChartOptions();
     var keyOptions =
     {
         "stackedBar": {
             type: "BarChart",
             stacked: true
         },
-        "bar": {
-            type: "BarChart",
+        "bar": barChartOptions,
         },
         "multiplebar": {
             type: "BarChart",
@@ -860,7 +915,7 @@ SaikuChartRenderer.prototype.process_data_tree = function (args, flat, setdata) 
                         value = parseFloat(cell.value.replace(/[^a-zA-Z 0-9.]+/g, ''));
                         maybePercentage = false;
                     }
-                    if (value > 0 && maybePercentage) {
+                    if (maybePercentage) {
                         value = cell.value && cell.value.indexOf('%') >= 0 ? value * 100 : value;
                     }
                     record.push(value);
