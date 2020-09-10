@@ -407,7 +407,8 @@ SaikuChartRenderer.prototype.cccOptionsDefault = {
                 return scene.isSelected() ? '10%' : 0;
             }
         },
-        clickable: true
+        clickable: true,
+        valuesFont: "normal 16px sans-serif"
         //valuesLabelStyle: 'inside'
     },
     TimeWheel: {
