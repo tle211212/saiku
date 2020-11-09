@@ -196,7 +196,6 @@ SaikuChartRenderer.prototype.switch_chart = function (key, override) {
             stacked: true
         },
         "bar": barChartOptions,
-        },
         "multiplebar": {
             type: "BarChart",
             multiChartIndexes: [1],
