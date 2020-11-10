@@ -532,6 +532,7 @@ var SelectionsModal = Modal.extend({
             .offset({ left: left});
 
         $('#filter_selections').attr("disabled", false);
+        $("input.filterbox").prop('disabled', false);
         $(this.el).find('a[href=#save]').focus();
         $(this.el).find('a[href=#save]').blur();
     },
