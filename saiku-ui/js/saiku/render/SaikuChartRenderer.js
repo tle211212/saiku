@@ -125,15 +125,15 @@ SaikuChartRenderer.prototype.render = function () {
 };
 
 SaikuChartRenderer.prototype.getBarChartOptions = function () {
-    let result = {
+    var result = {
         type: "BarChart"
     };
 
     // We will render 2 y-axis chart if the data has mixed percents and absolute values.
-    let numericColumns = [];
+    var numericColumns = [];
     if (this.data && this.data.metadata) {
-        for (let i=0; i < this.data.metadata.length; i++) {
-            let r = this.data.metadata[i];
+        for (var i=0; i < this.data.metadata.length; i++) {
+            var r = this.data.metadata[i];
             if (r && r.colType && r.colType == "Numeric") {
                 numericColumns.push(i);
             }
@@ -142,12 +142,12 @@ SaikuChartRenderer.prototype.getBarChartOptions = function () {
 
     if (numericColumns.length > 1 && this.data.resultset) {
         // Count percent and absolute numeric columns
-        let percentColumns = [];
-        let nP=0, nA=0;
-        for (let i=0; i < this.data.resultset.length; i++) {
-            let r = this.data.resultset[i];
-            for (let j=0; j < numericColumns.length; j++) {
-                let rr = r[numericColumns[j]];
+        var percentColumns = [];
+        var nP=0, nA=0;
+        for (var i=0; i < this.data.resultset.length; i++) {
+            var r = this.data.resultset[i];
+            for (var j=0; j < numericColumns.length; j++) {
+                var rr = r[numericColumns[j]];
                 if (rr && rr.f) {
                     if (rr.f.endsWith("%")) {
                         nP++;
@@ -163,8 +163,8 @@ SaikuChartRenderer.prototype.getBarChartOptions = function () {
         }
 
         if (nA > 0 && nP > 0) {
-            let percentColumnNames = [];
-            for (let i=0; i < percentColumns.length; i++) {
+            var percentColumnNames = [];
+            for (var i=0; i < percentColumns.length; i++) {
                 percentColumnNames.push(this.data.metadata[percentColumns[i]].colName);
             }
             result.plot2 = true;
@@ -188,7 +188,7 @@ SaikuChartRenderer.prototype.switch_chart = function (key, override) {
             this.workspace = override.workspace;
         }
     }
-    let barChartOptions = this.getBarChartOptions();
+    var barChartOptions = this.getBarChartOptions();
     var keyOptions =
     {
         "stackedBar": {
