@@ -5,12 +5,12 @@
  <overlays>
     <overlay id="startup.saikuAnalytics"  resourcebundle="content/saiku-ui/saikuplugin.properties" priority="1">
   		<menubar id="newmenu">
-  			<menuitem id="new-saiku-analytics" label="Saiku Analytics" command="mantleXulHandler.openUrl('Saiku Analytics','Saiku Analytics','content/saiku-ui/index.html?biplugin5=true')" />
+  			<menuitem id="new-saiku-analytics" label="Saiku Analytics" command="mantleXulHandler.openUrl('Saiku Analytics','Saiku Analytics','content/saiku-ui/index.html?biplugin5=true&amp;splash=false')" />
   		</menubar>				
     </overlay>
     
     <overlay id="launch" resourcebundle="content/saiku-ui/saikuplugin.properties"> 
-    	<button id="SaikuAnalytics" label="Saiku Analytics" command="Home.openFile('Saiku Analytics','Saiku Analytics', 'content/saiku-ui/index.html?biplugin5=true');$('#btnCreateNew').popover('hide')"/>
+    	<button id="SaikuAnalytics" label="Saiku Analytics" command="Home.openFile('Saiku Analytics','Saiku Analytics', 'content/saiku-ui/index.html?biplugin5=true&amp;splash=false');$('#btnCreateNew').popover('hide')"/>
     </overlay>
   </overlays>
   
