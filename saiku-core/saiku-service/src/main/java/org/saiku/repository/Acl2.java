@@ -78,8 +78,7 @@ class Acl2 {
       Map<String, AclEntry> acl = new TreeMap<>();
 
       try {
-        TypeReference ref = new TypeReference<Map<String, AclEntry>>() { };
-        acl = mapper.readValue(node.getProperty("owner").getString(), ref);
+        acl = mapper.readValue(node.getProperty("owner").getString(),  new TypeReference<Map<String, AclEntry>>() { });
         // mapper.readValue(acl, AclEntry.class);
         entry = acl.get(node.getPath());
         ///entry = e.getValue();
@@ -247,9 +246,7 @@ class Acl2 {
     Map<String, AclEntry> acl = new TreeMap<>();
     try {
       if (node != null && node.getProperty("owner") != null) {
-        TypeReference ref = new TypeReference<Map<String, AclEntry>>() { };
-
-        acl = mapper.readValue(node.getProperty("owner").getString(), ref);
+        acl = mapper.readValue(node.getProperty("owner").getString(),  new TypeReference<Map<String, AclEntry>>() { });
       }
     } catch (Exception e) {
 
@@ -414,8 +411,7 @@ class Acl2 {
       Map<String, AclEntry> aclData = new TreeMap<>();
 
       try {
-        TypeReference ref = new TypeReference<Map<String, AclEntry>>() { };
-        aclData = mapper.readValue(new File(file, "acl.json"), ref);
+        aclData = mapper.readValue(new File(file, "acl.json"),  new TypeReference<Map<String, AclEntry>>() { });
         entry = aclData.get(file.getPath());
       } catch (Exception e) {
         LOG.debug("Exception: " + file.getPath(), e.getCause());

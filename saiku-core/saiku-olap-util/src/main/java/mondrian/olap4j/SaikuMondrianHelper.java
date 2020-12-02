@@ -156,19 +156,20 @@ public class SaikuMondrianHelper {
 	  return DimensionLookup.getHanger(dimension);
 
   }
-	public  static ResultSet getSQLMemberLookup(OlapConnection con, String annotation, Level level, String search) throws SQLException {
+	public  static ResultSet getSQLMemberLookup(OlapConnection con, String annotation, Level level, String search, int searchLimit) throws SQLException {
 		if (hasAnnotation(level, annotation)) {
 			Map<String, Annotation> ann = getAnnotations(level);
 			Annotation a = ann.get(annotation);
 			String sql = a.getValue().toString();
 			
-			log.debug("Level SQLMember Lookup for " + level.getName() + " sql:[" + sql + "] parameter [" + search + "]");
+			log.debug("Level SQLMember Lookup for " + level.getName() + " sql:[" + sql + "] parameter [" + search + ", " + searchLimit + "]");
 			
 			RolapConnection rcon = con.unwrap(RolapConnection.class);
 			DataSource ds = rcon.getDataSource();
 			Connection sqlcon = ds.getConnection();
-			PreparedStatement stmt = sqlcon.prepareCall(sql);
-			stmt.setString(1, search);
+			PreparedStatement stmt = sqlcon.prepareStatement(sql);                        
+			stmt.setString(1, (search == null ? "%" : "%" + search + "%"));
+                        stmt.setInt(2, searchLimit < 0 ? 1600 : searchLimit);
 		  return stmt.executeQuery();
 		}
 		return null;

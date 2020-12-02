@@ -323,10 +323,12 @@ public class OlapMetaExplorer {
 				}
 				if (isMondrian(nativeCube)) {
 					if (SaikuMondrianHelper.hasAnnotation(l, MondrianDictionary.SQLMemberLookup)) {
-						if (search) {
-							ResultSet rs = SaikuMondrianHelper.getSQLMemberLookup(con, MondrianDictionary.SQLMemberLookup, l, searchString);
+						if (search || searchLimit > 0) {
+							ResultSet rs = SaikuMondrianHelper.getSQLMemberLookup(con, MondrianDictionary.SQLMemberLookup, l, searchString, searchLimit);
 							simpleMembers = ObjectUtil.convert2simple(rs);
-							log.debug("Found " + simpleMembers.size() + " members using SQL lookup for level " + level);
+							log.debug("Found " + simpleMembers.size() + " members using SQL lookup for level " + level
+                                                                + ". Search = " + search
+                                                                + ", limit = " + searchLimit);
 							return simpleMembers;
 						} else {
 							return new ArrayList<>();

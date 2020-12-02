@@ -17,8 +17,8 @@ package org.saiku.olap.dto;
 
 public class AbstractSaikuObject implements ISaikuObject, Comparable<ISaikuObject> {
 
-  private String uniqueName;
-  private String name;
+  protected String uniqueName;
+  protected String name;
 
   AbstractSaikuObject() {
   }
@@ -32,8 +32,16 @@ public class AbstractSaikuObject implements ISaikuObject, Comparable<ISaikuObjec
     return uniqueName;
   }
 
+  public void setUniqueName(String uniqueName) {
+    this.uniqueName = uniqueName;
+  }
+
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override
@@ -68,7 +76,7 @@ public class AbstractSaikuObject implements ISaikuObject, Comparable<ISaikuObjec
 
   @Override
   public String toString() {
-    return this.uniqueName;
+    return getUniqueName();
   }
 
   public int compareTo( ISaikuObject o ) {

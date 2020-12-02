@@ -52,25 +52,36 @@ public class SaikuCube extends AbstractSaikuObject {
 		return uniqueName;
 	}
 
-	@Override
-	public String getName() {
-		return super.getName();
-	}
-	
 	public String getCaption() {
 		return caption;
 	}
+
+        public void setCaption(String caption) {
+                this.caption = caption;
+        }
 	
 	public String getCatalog() {
 		return catalog;
 	}
+
+        public void setCatalog(String catalog) {
+                this.catalog = catalog;
+        }
+
 	public String getConnection() {
 		return connection;
 	}
+
+        public void setConnection(String connection) {
+                this.connection = connection;
+        }
 
 	public String getSchema() {
 		return schema;
 	}
 
+        public void setSchema(String schema) {
+                this.schema = schema;
+        } 
 }
 
