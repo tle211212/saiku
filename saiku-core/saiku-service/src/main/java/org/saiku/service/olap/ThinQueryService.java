@@ -259,7 +259,7 @@ public class ThinQueryService implements Serializable {
             result.setRuntime(new Double(format - start).intValue());
             return result;
         } catch (Exception | Error e) {
-            throw new SaikuServiceException("Can't execute query: " + tq.getName(), e);
+            throw new SaikuServiceException("Can't execute query: " + tq.getName() + ". Detail: " + e.getMessage(), e);
         }
     }
 
