@@ -411,7 +411,7 @@ public class ObjectUtil {
         Connection con = null;
         try {
           statement = rs.getStatement();
-
+          con = statement.getConnection();
         } catch (Exception e) {
           throw new SaikuServiceException(e);
         } finally {
@@ -419,6 +419,9 @@ public class ObjectUtil {
             rs.close();
             if (statement != null) {
               statement.close();
+            }
+            if (con != null) {
+              con.close();
             }
           } catch (Exception ee) {
             LOG.error("Could not close statement", ee);
