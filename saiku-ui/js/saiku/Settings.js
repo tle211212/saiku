@@ -61,8 +61,8 @@ var Settings = {
     // 0 - no limit
     RESULT_LIMIT: 0,
     MEMBERS_FROM_RESULT: true,
-    MEMBERS_LIMIT: 3000,
-    MEMBERS_SEARCH_LIMIT: 75,
+    MEMBERS_LIMIT: 1600,
+    MEMBERS_SEARCH_LIMIT: 500,
     ALLOW_IMPORT_EXPORT: false,
     ALLOW_PARAMETERS: true,
     PLUGINS: [
