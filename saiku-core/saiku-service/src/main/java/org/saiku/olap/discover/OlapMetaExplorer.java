@@ -184,9 +184,10 @@ public class OlapMetaExplorer {
 					if (cat != null) {
 						for (Schema schema : cat.getSchemas()) {
 							if ((StringUtils.isBlank(cube.getSchema()) && StringUtils.isBlank(schema.getName())) || schema.getName().equals(cube.getSchema())) {
+ log.debug("Look for native cube of " + cube.getName() + " - " + cube.getUniqueName());
 								for (Cube cub : schema.getCubes()) {
-									if (cub.getName().equals(cube.getName()) || cub.getUniqueName().equals(cube
-										.getName())) {
+ log.debug("                        " + cub.getName() + " - " + cub.getUniqueName());
+									if (cub.getName().equals(cube.getName()) || cub.getUniqueName().equals(cube.getUniqueName())) {
 										return cub;
 									}
 								}
