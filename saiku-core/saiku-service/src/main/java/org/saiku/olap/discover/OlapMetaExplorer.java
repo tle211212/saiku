@@ -323,9 +323,12 @@ public class OlapMetaExplorer {
 					throw new SaikuOlapException("Cannot find level " + level + " in hierarchy " + hierarchy + " of cube " + cube.getName());
 				}
 				if (isMondrian(nativeCube)) {
-					if (SaikuMondrianHelper.hasAnnotation(l, MondrianDictionary.SQLMemberLookup)) {
+					if (SaikuMondrianHelper.hasAnnotation(l, MondrianDictionary.SQLMemberLookup) &&
+                                            SaikuMondrianHelper.hasAnnotation(l, MondrianDictionary.SQLMultipleMemberLookup)) {
 						if (search || searchLimit > 0) {
-							ResultSet rs = SaikuMondrianHelper.getSQLMemberLookup(con, MondrianDictionary.SQLMemberLookup, l, searchString, searchLimit);
+							ResultSet rs = (search && searchString.indexOf(",") > 0) ?
+                                                                SaikuMondrianHelper.getSQLMultipleMemberLookup(con, MondrianDictionary.SQLMultipleMemberLookup, l, searchString) :
+                                                        	SaikuMondrianHelper.getSQLMemberLookup(con, MondrianDictionary.SQLMemberLookup, l, searchString, searchLimit);
 							simpleMembers = ObjectUtil.convert2simple(rs);
 							log.debug("Found " + simpleMembers.size() + " members using SQL lookup for level " + level
                                                                 + ". Search = " + search

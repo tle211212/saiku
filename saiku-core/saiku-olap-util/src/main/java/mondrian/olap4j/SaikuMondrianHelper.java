@@ -156,25 +156,65 @@ public class SaikuMondrianHelper {
 	  return DimensionLookup.getHanger(dimension);
 
   }
-	public  static ResultSet getSQLMemberLookup(OlapConnection con, String annotation, Level level, String search, int searchLimit) throws SQLException {
-		if (hasAnnotation(level, annotation)) {
-			Map<String, Annotation> ann = getAnnotations(level);
-			Annotation a = ann.get(annotation);
-			String sql = a.getValue().toString();
+
+    public static ResultSet getSQLMemberLookup(OlapConnection con, String annotation, Level level, String search, int searchLimit) throws SQLException {
+        if (hasAnnotation(level, annotation)) {
+            Map<String, Annotation> ann = getAnnotations(level);
+            Annotation a = ann.get(annotation);
+            String sql = a.getValue().toString();
 			
-			log.debug("Level SQLMember Lookup for " + level.getName() + " sql:[" + sql + "] parameter [" + search + ", " + searchLimit + "]");
+            log.debug("Level SQLMember Lookup for " + level.getName() + " sql:[" + sql + "] parameter [" + search + ", " + searchLimit + "]");
 			
-			RolapConnection rcon = con.unwrap(RolapConnection.class);
-			DataSource ds = rcon.getDataSource();
-			Connection sqlcon = ds.getConnection();
-			PreparedStatement stmt = sqlcon.prepareStatement(sql);                        
-			stmt.setString(1, (search == null ? "%" : "%" + search + "%"));
-                        stmt.setInt(2, searchLimit < 0 ? 1600 : searchLimit);
-		  return stmt.executeQuery();
-		}
-		return null;
-		
-	}
+            RolapConnection rcon = con.unwrap(RolapConnection.class);
+            DataSource ds = rcon.getDataSource();
+            Connection sqlcon = ds.getConnection();
+            PreparedStatement stmt = sqlcon.prepareStatement(sql);                        
+            stmt.setString(1, (search == null ? "%" : "%" + search + "%"));
+            stmt.setInt(2, searchLimit < 0 ? 1600 : searchLimit);
+            return stmt.executeQuery();
+        } 
+        return null;
+    }
+
+    public static ResultSet getSQLMultipleMemberLookup(OlapConnection con, String annotation, Level level, String search) throws SQLException {
+        if (hasAnnotation(level, annotation)) {
+            Map<String, Annotation> ann = getAnnotations(level);
+            Annotation a = ann.get(annotation);
+            String sql = a.getValue().toString();
+			
+            log.debug("Level SQLMultipleMember Lookup for " + level.getName() + " sql:[" + sql + "] parameter [" + search + "]");
+			
+            RolapConnection rcon = con.unwrap(RolapConnection.class);
+            DataSource ds = rcon.getDataSource();
+            Connection sqlcon = ds.getConnection();
+
+            String[] tokens = search.trim().split(",");
+            StringBuilder sb = new StringBuilder();
+            sb.append("(");
+            for (int i=0; i < tokens.length; i++) {
+                if (i < tokens.length - 1) {
+                    sb.append("?,");
+                }
+                else {
+                    sb.append("?");
+                } 
+            }            
+            sb.append(")");
+
+            if (sb.length() == 2) {
+                return null;
+            }
+            sql = sql.replace("(?)", sb.toString());
+            PreparedStatement stmt = sqlcon.prepareStatement(sql); 
+            for (int i=0; i < tokens.length; i++) {
+                stmt.setString(i+1, tokens[i]);
+            }
+
+            return stmt.executeQuery();
+        } 
+        return null;
+    }
+
 
   public static List<org.olap4j.metadata.Member> getMDXMemberLookup(OlapConnection con, String cube, Level level){
 	OlapStatement statement = null;
