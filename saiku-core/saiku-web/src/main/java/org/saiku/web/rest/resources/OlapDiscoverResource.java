@@ -461,7 +461,7 @@ public class OlapDiscoverResource implements Serializable {
 		}
 		SaikuCube cube = new SaikuCube(connectionName, cubeName,cubeName,cubeName, catalogName, schemaName);
 		try {
-			return olapDiscoverService.getMemberChildren(cube, memberName);
+			return olapDiscoverService.getMemberChildren(cube, memberName, 200);
 		} catch (Exception e) {
 			log.error(this.getClass().getName(),e);
 		}

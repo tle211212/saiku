@@ -429,15 +429,28 @@ public class OlapMetaExplorer {
 	}
 
 	public List<SaikuMember> getMemberChildren(SaikuCube cube, String uniqueMemberName) throws SaikuOlapException {
+                return getMemberChildren(cube, uniqueMemberName, -1);
+        }
+
+
+	public List<SaikuMember> getMemberChildren(SaikuCube cube, String uniqueMemberName, int limit) throws SaikuOlapException {
 		List<SaikuMember> members = new ArrayList<>();
 		try {
 			Cube nativeCube = getNativeCube(cube);
 			List<IdentifierSegment> memberList = IdentifierNode.parseIdentifier(uniqueMemberName).getSegmentList();
 			Member m = nativeCube.lookupMember(memberList);
 			if (m != null) {
+                                int count = 0;
 				for (Member c :  m.getChildMembers()) {
-					SaikuMember sm = ObjectUtil.convert(c);
-					members.add(sm);
+                                        if (limit < 0 || limit > count) {
+						SaikuMember sm = ObjectUtil.convert(c);
+    						members.add(sm);
+        					count++;
+                                        }
+					else
+					{
+						break;
+					}
 				}
 			}
 		} catch (OlapException e) {
