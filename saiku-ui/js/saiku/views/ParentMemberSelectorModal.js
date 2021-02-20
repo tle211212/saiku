@@ -614,12 +614,15 @@ var ParentMemberSelectorModal = Modal.extend({
             else{
                 if(this.dimension !== "Measures") {
 
-                    var dimHier = '[' + this.dimension + '].[' + this.hierarchy + '].';
+                    /*var dimHier = '[' + this.dimension + '].[' + this.hierarchy + '].';
                     var uniqueName = this.uniqueName.split(dimHier)[1] !== undefined ?
                         this.uniqueName.split(dimHier)[1] :
                         this.uniqueName.split(dimHier)[0];
                     if (this.close_callback != null) {
                         this.close_callback(dimHier + uniqueName)
+                    }*/
+                    if (this.close_callback != null) {
+                        this.close_callback(this.uniqueName);
                     }
                 }
                 else{
