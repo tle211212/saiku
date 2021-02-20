@@ -407,7 +407,8 @@ var ParentMemberSelectorModal = Modal.extend({
 
         var levelChildMember = new LevelChildMember({}, { ui: this, cube: this.cube, uniqueName: event });
         levelChildMember.fetch({
-            success: this.return_actual_level
+            success: this.return_actual_level,
+            error: this.return_actual_level
         });
     },
 
